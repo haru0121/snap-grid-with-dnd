@@ -22,20 +22,44 @@ function getStyles(left, top, isDragging) {
 }
 
 const Container = (props) => {
-  const { id, title, left, top } = props;
+  const { id, title } = props;
+  const [position, setPosition] = React.useState({ left: 0, top: 0 });
+
+  const moveBox = React.useCallback(
+    (left, top) => {
+      console.log("moveBox");
+      console.log("top:" + top + ";left:" + left);
+      setPosition({ ...position, left: left, top: top });
+    },
+    [position] // setBoxes(
+    //   {...boxes,${id}:{...boxes.a,left:left,top:top}}
+    //   // update(boxes, {
+    //   //   [id]: {
+    //   //     $merge: { left, top },
+    //   //   },
+    //   // }),
+    // )],
+  );
   const [{ isDragging }, drag, preview] = useDrag({
     type: ItemTypes.MATERIAL,
-    item: { type: ItemTypes.MATERIAL, id, left, top, title },
+    item: {
+      type: ItemTypes.MATERIAL,
+      id: id,
+      left: position.left,
+      top: position.top,
+      title: title,
+      moveBox: (left, top) => moveBox(left, top)
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
   });
   React.useEffect(() => {
-    //ドラッグ中のプレビューを設定
-    preview(getEmptyImage(), { captureDraggingState: true });
+    // //ドラッグ中のプレビューを設定
+    // preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
   return (
-    <div ref={drag} style={getStyles(left, top, isDragging)}>
+    <div ref={drag} style={getStyles(position.left, position.top, isDragging)}>
       <Material title={title} />
     </div>
   );

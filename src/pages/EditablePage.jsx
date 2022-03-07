@@ -13,7 +13,7 @@ const Container = () => {
           画像リスト
           <ul style={{ listStyle: "none" }}>
             <li>
-              <DraggableMaterial />
+              <DraggableMaterial id={"a"} title="dragme" />
             </li>
           </ul>
         </Col>
